@@ -1,0 +1,14 @@
+{
+  "name": "meniqa",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "test": "node --test test/",
+    "audit": "node src/audit.ts",
+    "audit:balance": "node src/balance-audit.ts",
+    "simulate": "node src/simulate.ts"
+  }
+}
