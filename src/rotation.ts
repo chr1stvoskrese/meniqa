@@ -265,7 +265,7 @@ function figureSvg(cubes: Cube[], unit: number): string {
   for (const c of sorted) {
     for (const f of facesOf(c)) {
       const pts = f.corners.map(project).map(([x, y]) => `${n(ox + unit * x)},${n(oy + unit * y)}`).join(' ')
-      body += `<polygon points="${pts}" fill="${SHADES[f.axis]}" stroke="${INK}" stroke-width="0.9" stroke-linejoin="round"/>`
+      body += `<polygon points="${pts}" fill="${SHADES[f.axis]}" stroke="${INK}" stroke-width="1.3" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`
     }
   }
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" aria-hidden="true">${body}</svg>`
