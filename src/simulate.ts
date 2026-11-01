@@ -5,6 +5,7 @@ import type { Answer } from './scoring.ts'
 import { nextLevel, SECTIONS, START_LEVEL } from './adaptive.ts'
 import { generateBalance } from './balance.ts'
 import { generateMemory } from './memory.ts'
+import { RECALL_DIFFICULTY, RECALL_GUESS } from './recall.ts'
 import { generateRotation } from './rotation.ts'
 
 // Simulated people who behave exactly as the model assumes. This only checks that
@@ -28,6 +29,14 @@ function gaussian(): number {
 function run(answer: (d: number, guess: number) => boolean, k: number): { theta: number; sd: number } {
   const answers: Answer[] = []
   for (const section of SECTIONS) {
+    if (section.kind === 'study' || section.kind === 'recall') continue
+    if (section.kind === 'delayed') {
+      for (let i = 0; i < section.count; i++) {
+        const correct = answer(RECALL_DIFFICULTY, RECALL_GUESS)
+        answers.push({ difficulty: RECALL_DIFFICULTY, correct, guess: RECALL_GUESS })
+      }
+      continue
+    }
     let level = START_LEVEL
     const guess = section.kind === 'matrix' ? 1 / 8 : section.kind === 'memory' ? 0.01 : 1 / 6
     for (let i = 0; i < section.count; i++) {
@@ -63,7 +72,7 @@ const guessers = Array.from({ length: N }, (_, k) => iq(run((_d, g) => r.next() 
 const perfect = iq(run(() => true, 0).theta)
 const zero = iq(run(() => false, 0).theta)
 
-console.log(`Simulated people: ${N}. Items per test: ${SECTIONS.reduce((s, x) => s + x.count, 0)}.`)
+console.log(`Simulated people: ${N}. Scored items per test: ${SECTIONS.filter((x) => x.kind !== 'study' && x.kind !== 'recall').reduce((s, x) => s + x.count, 0)}.`)
 console.log(`Correlation, true vs estimated: ${corr.toFixed(2)}`)
 console.log(`True value inside the shown range: ${((100 * inside) / N).toFixed(1)}%`)
 console.log(`Average range width: ${(width / N).toFixed(0)} IQ points`)

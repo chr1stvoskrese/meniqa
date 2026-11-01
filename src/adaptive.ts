@@ -2,10 +2,13 @@
 import { LEVELS } from './generator.ts'
 
 export const SECTIONS = [
+  { kind: 'study', count: 8, limitMs: 6_000 },
+  { kind: 'recall', count: 8, limitMs: 20_000 },
   { kind: 'matrix', count: 20, limitMs: 120_000 },
   { kind: 'balance', count: 12, limitMs: 90_000 },
   { kind: 'rotation', count: 12, limitMs: 90_000 },
   { kind: 'memory', count: 8, limitMs: 120_000 },
+  { kind: 'delayed', count: 8, limitMs: 20_000 },
 ] as const
 
 export const START_LEVEL = 2
