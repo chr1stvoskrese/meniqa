@@ -2,8 +2,9 @@
 import { LEVELS } from './generator.ts'
 
 export const SECTIONS = [
-  { kind: 'matrix', count: 24, limitMs: 120_000 },
-  { kind: 'balance', count: 16, limitMs: 90_000 },
+  { kind: 'matrix', count: 20, limitMs: 120_000 },
+  { kind: 'balance', count: 12, limitMs: 90_000 },
+  { kind: 'rotation', count: 12, limitMs: 90_000 },
 ] as const
 
 export const START_LEVEL = 2

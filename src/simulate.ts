@@ -4,6 +4,7 @@ import { chanceCorrect, estimateAbility } from './scoring.ts'
 import type { Answer } from './scoring.ts'
 import { nextLevel, SECTIONS, START_LEVEL } from './adaptive.ts'
 import { generateBalance } from './balance.ts'
+import { generateRotation } from './rotation.ts'
 
 // Simulated people who behave exactly as the model assumes. This only checks that
 // the arithmetic works. It says nothing about whether the test measures real ability.
@@ -14,7 +15,8 @@ const difficulty = new Map<string, number>()
 
 function difficultyOf(kind: string, level: number, k: number): number {
   const key = `${kind}:${level}:${k % 40}`
-  if (!difficulty.has(key)) difficulty.set(key, kind === 'matrix' ? generateItem(key, level).difficulty : generateBalance(key, level).difficulty)
+  const build = kind === 'matrix' ? generateItem : kind === 'balance' ? generateBalance : generateRotation
+  if (!difficulty.has(key)) difficulty.set(key, build(key, level).difficulty)
   return difficulty.get(key) as number
 }
 

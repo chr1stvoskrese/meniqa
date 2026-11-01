@@ -10,7 +10,7 @@ The name is pronounced *MEH-nee-ka*.
 
 ## The test
 
-40 items: 24 matrices, up to 2 minutes each, and 16 balances, up to 90 seconds each. Solve an item and the next one gets harder; miss it and the next one gets easier.
+44 items: 20 matrices, up to 2 minutes each, then 12 balances and 12 rotations, up to 90 seconds each. Solve an item and the next one gets harder; miss it and the next one gets easier.
 
 **Matrices.** Each 3×3 matrix follows rules drawn from six types:
 
@@ -27,9 +27,11 @@ A level combines 1 to 4 rules. Difficulty also depends on the rule types, the nu
 
 **Balances.** Scales in equilibrium show how shapes relate. The person picks which of 6 options balances the last scale. Levels run from 2 shapes on one scale to 5 shapes on four scales, where a weight has to be worked out through a chain.
 
+**Rotation.** Figures made of cubes. The person picks which of 6 options is the reference figure turned in space. Levels run from 6 cubes turned once to 10 cubes turned three times. From level 3 the options are three mirror pairs, so finding the right shape is not enough: a mirror image is a different figure.
+
 ### Why you can trust an item
 
-- **One right answer.** `src/solver.ts` is independent of the generator. It sees only what a person sees and tries every rule it knows along rows and columns. An item ships only if all fitting rules agree and exactly one option remains. `src/balance-solver.ts` does the same for balances by trying every assignment of weights.
+- **One right answer.** `src/solver.ts` is independent of the generator. It sees only what a person sees and tries every rule it knows along rows and columns. An item ships only if all fitting rules agree and exactly one option remains. `src/balance-solver.ts` does the same for balances by trying every assignment of weights, and `src/rotation-solver.ts` for rotations by trying all 24 turns of a cube.
 - **The answer cannot be found without solving.** A common design makes every wrong option differ from the answer in exactly one way, which makes the answer the "centre" of the options. Méniqa uses balanced options instead. `npm run audit` attacks both designs on 3000 matrices per level:
 
 | Wrong options | Finding the answer without solving |
@@ -37,7 +39,7 @@ A level combines 1 to 4 rules. Difficulty also depends on the rule types, the nu
 | Exactly one difference | 100% |
 | Balanced (used here) | 8–14% (random guessing is 12.5%) |
 
-Balances have their own attacks in `npm run audit:balance`, with chance at 16.7%. The strongest still reaches 20–26.5% at levels 5–8.
+Balances have their own attacks in `npm run audit:balance`, with chance at 16.7%. The strongest still reaches 20–26.5% at levels 5–8. Rotations have `npm run audit:rotation`, where all attacks stay near chance. Rotation drawings also guarantee that every cube can be seen.
 
 - **The generator can be public.** An item depends on its seed, so a test that keeps the seed secret stays safe even though this code is open.
 
@@ -50,7 +52,7 @@ Balances have their own attacks in `npm run audit:balance`, with chance at 16.7%
 - Scores past 70 and 130 are shown exactly only from 5000 people in the group. Both thresholds are starting choices, not standards.
 - Retakes and very fast runs are meant to stay out of the norms.
 
-`npm run simulate` checks the arithmetic on simulated people who behave as the model assumes: correlation 0.94 between true and estimated ability, true value inside the range 94% of the time, average range 20 IQ points. This does not show that the test measures intelligence. Only data from people can show that.
+`npm run simulate` checks the arithmetic on simulated people who behave as the model assumes: correlation 0.94 between true and estimated ability, true value inside the range 95% of the time, average range 19 IQ points. This does not show that the test measures intelligence. Only data from people can show that.
 
 ### Quality targets
 
@@ -61,7 +63,7 @@ These are our own goals, none of them met or measured yet:
 
 ### Known limits
 
-- Only matrices and balances exist, so the score covers reasoning. Six more sections are planned: 3D rotation, assembly, digit span, mental arithmetic, symbol speed and vocabulary.
+- Only matrices, balances and rotation exist, so the score covers reasoning and spatial ability. Five more sections are planned: assembly, digit span, mental arithmetic, symbol speed and vocabulary.
 - Item difficulty is a formula so far, not yet fitted from answers.
 - At 4 rules, solving any 3 is enough to find the answer among the 8 options.
 - The test is unsupervised, so a score proves neither identity nor test conditions.
@@ -75,6 +77,7 @@ Requires Node 24 or newer. There are no dependencies.
 npm test
 npm run audit          # attacks on matrices
 npm run audit:balance  # attacks on balances
+npm run audit:rotation # attacks on rotations
 npm run simulate       # checks the scoring arithmetic
 ```
 
@@ -86,11 +89,14 @@ src/solver.ts          independent check of every matrix
 src/render.ts          draws matrices as SVG
 src/balance.ts         balance generation and drawing
 src/balance-solver.ts  independent check of every balance
+src/rotation.ts        rotation generation and drawing
+src/rotation-solver.ts independent check of every rotation
 src/adaptive.ts        test structure and the adaptive rule
 src/scoring.ts         ability estimate
 src/norms.ts           norms and the IQ scale
 src/audit.ts           attacks on matrices
 src/balance-audit.ts   attacks on balances
+src/rotation-audit.ts  attacks on rotations
 src/simulate.ts        scoring check on simulated people
 ```
 

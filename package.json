@@ -9,6 +9,7 @@
     "test": "node --test test/",
     "audit": "node src/audit.ts",
     "audit:balance": "node src/balance-audit.ts",
+    "audit:rotation": "node src/rotation-audit.ts",
     "simulate": "node src/simulate.ts"
   }
 }
