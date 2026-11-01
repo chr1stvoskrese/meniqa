@@ -50,3 +50,14 @@ test('drawing shows every scale, the blank scale and all options, without the an
   assert.ok(panels[panels.length - 1].includes('>?<'))
   assert.ok(!JSON.stringify({ panels, options }).includes('answer'))
 })
+
+test('options with many shapes stay inside the frame', () => {
+  for (let k = 0; k < 60; k++) {
+    for (const svg of renderBalance(generateBalance(`f${k}`, 1)).options) {
+      for (const m of svg.matchAll(/c[xy]="([\d.]+)"|points="([^"]+)"/g)) {
+        const ys = m[2] ? m[2].split(' ').map((p) => Number(p.split(',')[1])) : []
+        for (const y of ys) assert.ok(y >= 0 && y <= 70, `y ${y}`)
+      }
+    }
+  }
+})

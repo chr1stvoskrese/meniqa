@@ -191,7 +191,11 @@ function scaleSvg(left: number[], right: number[] | null, shapes: number[]): str
 }
 
 function optionSvg(m: number[], shapes: number[]): string {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 70" aria-hidden="true">${group(m, shapes, 50, 44 + (size(m) > 3 ? 13 : 0), 9.5, 3)}</svg>`
+  // Up to nine shapes, so they shrink to keep every row inside the frame.
+  const rows = Math.ceil(size(m) / 3)
+  const r = rows > 2 ? 7 : 9.5
+  const base = 35 + (rows * r * 2.3) / 2
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 70" aria-hidden="true">${group(m, shapes, 50, base, r, 3)}</svg>`
 }
 
 export function renderBalance(item: BalanceItem): { panels: string[]; options: string[] } {
