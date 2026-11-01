@@ -10,7 +10,7 @@ The name is pronounced *MEH-nee-ka*.
 
 ## The test
 
-44 items: 20 matrices, up to 2 minutes each, then 12 balances and 12 rotations, up to 90 seconds each. Solve an item and the next one gets harder; miss it and the next one gets easier.
+52 items: 20 matrices, up to 2 minutes each, 12 balances and 12 rotations, up to 90 seconds each, and 8 memory trials, up to 2 minutes each. Solve an item and the next one gets harder; miss it and the next one gets easier.
 
 **Matrices.** Each 3×3 matrix follows rules drawn from six types:
 
@@ -28,6 +28,8 @@ A level combines 1 to 4 rules. Difficulty also depends on the rule types, the nu
 **Balances.** Scales in equilibrium show how shapes relate. The person picks which of 6 options balances the last scale. Levels run from 2 shapes on one scale to 5 shapes on four scales, where a weight has to be worked out through a chain.
 
 **Rotation.** Figures made of cubes. The person picks which of 6 options is the reference figure turned in space. Levels run from 6 cubes turned once to 10 cubes turned three times. From level 3 the options are three mirror pairs, so finding the right shape is not enough: a mirror image is a different figure.
+
+**Memory.** Short true-or-false sums alternate with cells lit on a grid, and the cells must then be restored in order. The sums block silent rehearsal, and a trial counts only if nearly all of them were right too. Levels run from 2 cells to 9.
 
 ### Why you can trust an item
 
@@ -63,9 +65,10 @@ These are our own goals, none of them met or measured yet:
 
 ### Known limits
 
-- Only matrices, balances and rotation exist, so the score covers reasoning and spatial ability. Five more sections are planned: assembly, digit span, mental arithmetic, symbol speed and vocabulary.
+- Only matrices, balances, rotation and memory exist. More is planned: assembly, digit span, delayed recall, mental arithmetic, symbol speed and vocabulary.
 - Item difficulty is a formula so far, not yet fitted from answers.
 - At 4 rules, solving any 3 is enough to find the answer among the 8 options.
+- A memory trial can be defeated with a pen or a screenshot. Sending cells one at a time makes it harder, but nothing fully prevents it.
 - The test is unsupervised, so a score proves neither identity nor test conditions.
 - Education weighting uses OECD figures, which do not describe the whole world.
 
@@ -91,6 +94,7 @@ src/balance.ts         balance generation and drawing
 src/balance-solver.ts  independent check of every balance
 src/rotation.ts        rotation generation and drawing
 src/rotation-solver.ts independent check of every rotation
+src/memory.ts          memory generation and scoring
 src/adaptive.ts        test structure and the adaptive rule
 src/scoring.ts         ability estimate
 src/norms.ts           norms and the IQ scale

@@ -4,6 +4,7 @@ import { chanceCorrect, estimateAbility } from './scoring.ts'
 import type { Answer } from './scoring.ts'
 import { nextLevel, SECTIONS, START_LEVEL } from './adaptive.ts'
 import { generateBalance } from './balance.ts'
+import { generateMemory } from './memory.ts'
 import { generateRotation } from './rotation.ts'
 
 // Simulated people who behave exactly as the model assumes. This only checks that
@@ -15,7 +16,7 @@ const difficulty = new Map<string, number>()
 
 function difficultyOf(kind: string, level: number, k: number): number {
   const key = `${kind}:${level}:${k % 40}`
-  const build = kind === 'matrix' ? generateItem : kind === 'balance' ? generateBalance : generateRotation
+  const build = kind === 'matrix' ? generateItem : kind === 'balance' ? generateBalance : kind === 'rotation' ? generateRotation : generateMemory
   if (!difficulty.has(key)) difficulty.set(key, build(key, level).difficulty)
   return difficulty.get(key) as number
 }
@@ -28,7 +29,7 @@ function run(answer: (d: number, guess: number) => boolean, k: number): { theta:
   const answers: Answer[] = []
   for (const section of SECTIONS) {
     let level = START_LEVEL
-    const guess = section.kind === 'matrix' ? 1 / 8 : 1 / 6
+    const guess = section.kind === 'matrix' ? 1 / 8 : section.kind === 'memory' ? 0.01 : 1 / 6
     for (let i = 0; i < section.count; i++) {
       const d = difficultyOf(section.kind, level, k + i)
       const correct = answer(d, guess)
