@@ -19,8 +19,8 @@ export type BalanceItem = {
 type Config = { shapes: number; scales: number; sideMax: number; targetMax: number; near: boolean }
 
 export const BALANCE_LEVELS: Config[] = [
-  { shapes: 2, scales: 1, sideMax: 2, targetMax: 1, near: false },
-  { shapes: 2, scales: 1, sideMax: 3, targetMax: 2, near: true },
+  { shapes: 2, scales: 1, sideMax: 3, targetMax: 2, near: false },
+  { shapes: 2, scales: 1, sideMax: 4, targetMax: 3, near: true },
   { shapes: 3, scales: 2, sideMax: 3, targetMax: 1, near: false },
   { shapes: 3, scales: 2, sideMax: 3, targetMax: 2, near: true },
   { shapes: 4, scales: 3, sideMax: 3, targetMax: 2, near: false },
@@ -71,19 +71,28 @@ function tryBuild(r: Rng, level: number): BalanceItem | null {
     }
   }
   if (pairs.length < cfg.scales) return null
-  const scales = r.shuffle(pairs).slice(0, cfg.scales)
+  // Pick by how many shapes sit on each side first, or one simple pattern would dominate.
+  const pattern = (s: Scale) => [size(s.left), size(s.right)].sort().join(':')
+  const patterns = [...new Set(pairs.map(pattern))]
+  const pickByPattern = () => {
+    const wanted = r.pick(patterns)
+    return r.pick(pairs.filter((p) => pattern(p) === wanted))
+  }
+  const scales: Scale[] = []
+  for (let tries = 0; scales.length < cfg.scales && tries < 40; tries++) {
+    const s = pickByPattern()
+    if (s && !scales.includes(s)) scales.push(s)
+  }
+  if (scales.length < cfg.scales) return null
 
   const targets = multisets(cfg.shapes, cfg.targetMax)
   const target = r.pick(targets)
-  const pool = multisets(cfg.shapes, 6)
+  // With two shapes every option is a count of one shape, so counts need room on both sides of the answer.
+  const pool = multisets(cfg.shapes, cfg.shapes === 2 ? 9 : 6)
   const fits = r.shuffle(pool.filter((m) => total(m, w) === total(target, w) && disjoint(m, target)))
-  // Working it out must take a step: the answer cannot be read off a single scale.
-  const sameAsScale = (m: number[]) =>
-    scales.some((s) => {
-      const has = (a: number[], b: number[]) => a.join() === b.join()
-      return (has(s.left, target) && has(s.right, m)) || (has(s.right, target) && has(s.left, m))
-    })
-  const answer = fits.find((m) => level <= 2 || !sameAsScale(m))
+  // Working it out must take a step: the target is never a side already shown.
+  if (scales.some((s) => s.left.join() === target.join() || s.right.join() === target.join())) return null
+  const answer = fits[0]
   if (!answer) return null
 
   // Wrong options leave out the target's shapes too, or that alone would give away the answer.
