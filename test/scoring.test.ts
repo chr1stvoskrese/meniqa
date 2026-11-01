@@ -37,9 +37,9 @@ test('scores past 130 and 70 stay capped until there is enough data', () => {
 })
 
 test('range reads naturally at the capped ends', () => {
-  assert.equal(toIq(0, 0.3, null).range, 'от 91 до 109')
-  assert.equal(toIq(1.6, 0.3, null).range, 'от 115')
-  assert.equal(toIq(-1.6, 0.3, null).range, 'до 85')
+  assert.equal(toIq(0, 0.3, null).range, '91–109')
+  assert.equal(toIq(1.6, 0.3, null).range, '≥ 115')
+  assert.equal(toIq(-1.6, 0.3, null).range, '≤ 85')
   assert.equal(toIq(3, 0.2, null).range, '')
 })
 

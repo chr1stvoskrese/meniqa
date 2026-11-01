@@ -53,9 +53,10 @@ export function toIq(theta: number, thetaSd: number, norm: Norm | null): IqResul
   }
   const openLow = !exact && low < 70
   const openHigh = !exact && high > 130
-  let range = `от ${low} до ${high}`
-  if (openLow) range = high < 70 ? '' : `до ${high}`
-  if (openHigh) range = low > 130 ? '' : `от ${low}`
+  // Symbols rather than words, so a stored range reads the same in every language.
+  let range = `${low}–${high}`
+  if (openLow) range = high < 70 ? '' : `≤ ${high}`
+  if (openHigh) range = low > 130 ? '' : `≥ ${low}`
   if (openLow && openHigh) range = ''
   return {
     text: show(value),
